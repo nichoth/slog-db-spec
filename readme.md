@@ -6,14 +6,14 @@ Spec for slog db.
 
 ```js
 module.exports = {
-  slogGetValues: { type: 'async' },
-  slogFetchNode: { type: 'async' },
-  slogPutNode: { type: 'async' },
-  slogFetchNodes: { type: 'async' },
-  slogPutField: { type: 'async' },
-  slogDelField: { type: 'async' },
-  slogPutValue: { type: 'async' },
-  slogDelValue: { type: 'async' },
-  slogDelNode: { type: 'async' }
+  getValues: { type: 'async' },
+  fetchNode: { type: 'async' },
+  putNode: { type: 'async' },
+  fetchNodes: { type: 'async' },
+  putField: { type: 'async' },
+  delField: { type: 'async' },
+  putValue: { type: 'async' },
+  delValue: { type: 'async' },
+  delNode: { type: 'async' }
 };
 ```
