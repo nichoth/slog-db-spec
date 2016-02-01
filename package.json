@@ -1,0 +1,24 @@
+{
+  "name": "slog-db-spec",
+  "version": "0.0.0",
+  "description": "Spec for slog db",
+  "main": "test/index.js",
+  "scripts": {
+    "test": "node example/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nichoth/slog-db-spec.git"
+  },
+  "author": "Nick Thomas <nichoth@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nichoth/slog-db-spec/issues"
+  },
+  "homepage": "https://github.com/nichoth/slog-db-spec#readme",
+  "dependencies": {
+  },
+  "devdependencies": {
+    "tape": "^4.4.0"
+  }
+}
