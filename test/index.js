@@ -1,18 +1,37 @@
+var test = require('tape');
+var data = require('./data.js');
 var methods = require('../methods.js');
 
-module.exports = function(test, fixture) {
+module.exports = function(createDb, done) {
+
   test('Methods exist', function(t) {
-    fixture.setup(test, function(err, db) {
+    createDb(function(err, db) {
       t.error(err);
       Object.keys(methods).forEach(function(method) {
         t.ok(db[method], 'db has method ' + method);
       });
-      fixture.teardown(test, db, function(err) {
+      done(db, function(err) {
         t.error(err);
         t.end();
       });
     });
   });
+
+  test('Put a node', function(t) {
+    createDb(function(err, db) {
+      t.error(err);
+      db.putNode(data[0], function(err, node) {
+        t.error(err);
+        t.ok(node, 'node returned');
+        t.ok(node.index, 'node has an index');
+        done(db, function(err) {
+          t.error(err);
+          t.end();
+        });
+      });
+    });
+  });
+
 };
 
 
@@ -26,16 +45,6 @@ test('Get values for a field', function (t) {
   t.equal(typeof db.slogGetValues, 'function');
 });
 
-test('Put a node', function(t) {
-  t.plan(1);
-  var db = createDb('node');
-  db.slogPutNode([
-    {field: 'name', value: 'a'},
-    {field: 'a', value: 'b'}
-  ], function(err) {
-    t.error(err);
-  });
-});
 
 // Delete related values too
 test('Delete a field', function(t) {
@@ -53,9 +62,6 @@ test('Delete a field', function(t) {
 
 // fetchNode
 // Get a node by id. Returns an object with all metadata.
-
-// putNode
-// Take an object and put it in the db with the right indexes.
 
 // fetchNodes
 // Get array of nodes from levelgraph query. Like

@@ -1,14 +1,16 @@
-var tape = require('tape');
 var tests = require('../');
-var methods = require('../methods.js');
 
-var fixture = {
-  setup: function(test, cb) {
-    cb(null, methods);
-  },
-  teardown: function(test, db, cb) {
-    cb();
-  }
-};
+// called before every test
+// should return an empty db
+function createDb(done) {
+  done(null, someDb);
+}
 
-tests(tape, fixture);
+// called after every test
+// can be used to delete db
+function teardown(db, done) {
+  db.close();
+  done(null);
+}
+
+tests(createDb, teardown);
