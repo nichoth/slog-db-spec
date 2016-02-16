@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/nichoth/slog-db-spec#readme",
   "dependencies": {
+    "after": "^0.8.1"
   },
   "devdependencies": {
     "tape": "^4.4.0"

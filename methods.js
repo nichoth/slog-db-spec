@@ -1,5 +1,6 @@
 module.exports = {
   getValues: { type: 'async' },
+  predicateStream: { type: 'readable' },
   fetchNode: { type: 'async' },
   putNode: { type: 'async' },
   fetchNodes: { type: 'async' },
@@ -7,6 +8,7 @@ module.exports = {
   delField: { type: 'async' },
   putValue: { type: 'async' },
   delValue: { type: 'async' },
-  delNode: { type: 'async' }
+  delNode: { type: 'async' },
+  predicateStream: { type: 'readable' }
 };
 
