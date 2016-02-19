@@ -8,7 +8,6 @@ module.exports = {
   delField: { type: 'async' },
   putValue: { type: 'async' },
   delValue: { type: 'async' },
-  delNode: { type: 'async' },
-  predicateStream: { type: 'readable' }
+  delNode: { type: 'async' }
 };
 

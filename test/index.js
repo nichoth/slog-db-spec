@@ -5,6 +5,27 @@ var methods = require('../methods.js');
 
 module.exports = function(createDb, done) {
 
+  function setup(t, db, customFn) {
+    t.test('setup', function(tt) {
+      db.putNode(data[0], function(err, node) {
+        tt.error(err);
+        if (customFn) {
+          return customFn(function() { tt.end(); });
+        }
+        tt.end();
+      });
+    });
+  }
+
+  function teardown(t, db, done) {
+    t.test('teardown', function(tt) {
+      done(db, err => {
+        tt.error(err);
+        tt.end();
+      });
+    });
+  }
+
   test('Methods exist', function(t) {
     createDb(function(err, db) {
       t.error(err);
@@ -24,6 +45,7 @@ module.exports = function(createDb, done) {
       db.putNode(data[0], function(err, node) {
         t.error(err);
         t.ok(node, 'node returned');
+        t.ok(node.name, 'node has name property');
         t.ok(node.index, 'node has an index');
         done(db, function(err) {
           t.error(err);
@@ -38,14 +60,10 @@ module.exports = function(createDb, done) {
     createDb(function(err, db) {
       var keys = [];
       t.error(err);
-      t.test('predicate stream setup', function(tt) {
-        db.putNode(data[0], function(err, node) {
-          tt.error(err);
-          tt.end();
-        });
-      });
 
-      t.test('emit put events', function(tt) {
+      setup(t, db);
+
+      t.test('emits put events', function(tt) {
         tt.plan(4);
         var stream = db.predicateStream();
         var next = after(2, function doneStreaming(err, res) {
@@ -59,7 +77,7 @@ module.exports = function(createDb, done) {
         });
       });
 
-      t.test('emit del events', function(tt) {
+      t.test('emits del events', function(tt) {
         console.log(keys);
         tt.plan(4);
         var stream = db.predicateStream({ old: false });
@@ -74,29 +92,67 @@ module.exports = function(createDb, done) {
         db.delField({ key: keys[1] }, (err) => tt.error(err));
       });
 
-      t.test('predicate stream teardown', function(tt) {
-        done(db, function(err) {
-          tt.error(err);
-          tt.end();
+      teardown(t, db, done);
+
+      t.end();
+    });
+  });
+
+
+  test('getValues for a field', function(t) {
+    createDb(function(err, db) {
+      setup(t, db);
+
+      t.test('gets the right values', function(tt) {
+        tt.plan(4);
+        var fields = {};
+        var next = after(2, function doneStreaming() {
+          db.getValues(fields.mythology, (err, vals) => {
+            tt.error(err);
+            tt.equal(vals[0].name, 'greek', 'gets the right value');
+          });
+          db.getValues(fields.eyes, (err, vals) => {
+            tt.error(err);
+            tt.equal(vals[0].name, 2, 'gets the right value');
+          });
+        });
+        db.predicateStream().on('data', data => {
+          fields[data.value.name] = data.key;
+          next();
         });
       });
 
+      teardown(t, db, done);
       t.end();
 
     });
-
   });
+
+  test('delete a field', function(t) {
+    createDb(function(err, db) {
+      t.error(err);
+      setup(t, db);
+
+      t.test('orphaned values are deleted', function(tt) {
+        function getFieldIndexes(db, done) {
+          var fields = {};
+          var next = after(2, function doneStreaming(err, res) {
+            done(err, fields);
+          });
+          db.predicateStream().on('data', (err, data) => {
+            fields[data.value.name] = data.key;
+            next();
+          });
+        });
+      });
+    });
+  });
+
+
 };
 
 
 /*
-// Get all values that are related to the given field. Return an array of
-// objects.
-test('Get values for a field', function (t) {
-  t.plan(1);
-  var db = createDb('getVals');
-  t.equal(typeof db.slogGetValues, 'function');
-});
 
 
 // Delete related values too
